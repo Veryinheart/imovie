@@ -48,6 +48,7 @@ router.post("/addToFavorite", auth, (req, res) => {
 
 router.post("/removeFromFavorite", auth, (req, res) => {
     //save the info about movieId and userId into the collection
+    console.log("removeFromFavorite")
     Favorite.findOneAndDelete({ "movieId": req.body.movieId, "userFrom": req.body.userFrom })
         .exec((err, doc) => {
             if (err) return res.status(400).json({ success: false, err: err });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { API_URL, API_KEY, IAMGE_URL } from '../../Config';
+import { API_URL, API_KEY, IMAGE_URL } from '../../Config';
 import axios from 'axios';
 
 import { Typography, Row, Button} from 'antd';
@@ -51,7 +51,7 @@ function LandingPage() {
 
             {/* //main image */}
             {Movies[0] && <MainImage
-                image={`${IAMGE_URL}w1280${Movies[0].backdrop_path}`}
+                image={`${IMAGE_URL}w1280${Movies[0].backdrop_path}`}
                 title={`${Movies[0].original_title}`}
                 text={`${Movies[0].overview}`} />
             }
@@ -69,7 +69,7 @@ function LandingPage() {
                     {Movies && Movies.map((movie, index) => (
                         <React.Fragment key={index}>
                             <GridCard
-                                image={movie.poster_path && `${IAMGE_URL}w500${movie.poster_path}`}
+                                image={movie.poster_path && `${IMAGE_URL}w500${movie.poster_path}`}
                                 moviedId={movie.id}
                             />
                         </React.Fragment>

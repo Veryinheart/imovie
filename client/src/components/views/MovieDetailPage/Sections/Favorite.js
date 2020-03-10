@@ -13,9 +13,11 @@ function Favorite(props) {
         movieId: props.movieId,
         movieTitle: props.movieInfo.original_title,
         movieImage: props.movieInfo.backdrop_path,
-        movieRunTime: props.movieInfo.runtime
+        movieRunTime: props.movieInfo.runtime,
+        moviePost:props.movieInfo.poster_path,
     }
 
+    // console.log(props.movieInfo.poster_path);
 
     useEffect(() => {
         axios.post('/api/favorite/favoriteNumber', movieDetail)

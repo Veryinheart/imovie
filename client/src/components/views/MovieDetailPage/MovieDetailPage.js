@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { API_URL, API_KEY, IAMGE_URL } from '../../Config';
+import { API_URL, API_KEY, IMAGE_URL } from '../../Config';
 import MainImage from '../LandingPage/Sections/MainImage';
 import { Descriptions, Badge, Button, Row, Typography } from 'antd';
 
@@ -17,6 +17,7 @@ function MovieDetailPage(props) {
     const [Toggle, setToggle] = useState(false);
 
     const MovieId = props.match.params.movieId;
+
     useEffect(() => {
         // console.log(props)
         const movieId = props.match.params.movieId;
@@ -32,6 +33,7 @@ function MovieDetailPage(props) {
                     .then(response => {
                         // console.log(response.cast)
                         setCasts(response.cast);
+                        // console.log(Casts)
                     })
             })
     }, [])
@@ -48,7 +50,7 @@ function MovieDetailPage(props) {
 
             {/* main image */}
             {Movie && <MainImage
-                image={`${IAMGE_URL}w1280${Movie.backdrop_path}`}
+                image={`${IMAGE_URL}w1280${Movie.backdrop_path}`}
                 title={`${Movie.original_title}`}
                 text={`${Movie.overview}`} />
             }
@@ -100,7 +102,7 @@ function MovieDetailPage(props) {
                                 {cast.profile_path &&
                                     <GridCard
                                         actor
-                                        image={`${IAMGE_URL}w500${cast.profile_path}`}
+                                        image={`${IMAGE_URL}w500${cast.profile_path}`}
                                         character={cast.character}
                                     />}
                             </React.Fragment>

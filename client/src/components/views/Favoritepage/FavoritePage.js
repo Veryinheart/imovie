@@ -1,55 +1,66 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Popover, Button } from 'antd';
 import Axios from 'axios';
+import { API_URL, API_KEY, IMAGE_URL } from '../../Config';
+
 
 function FavoritePage() {
 
     const [FavoriteMovies, setFavoriteMovies] = useState([]);
-    const [num, setNum] = useState(0);
+    const [fresh, setFresh] = useState(false);
+    
 
     const favoritedMoviesInfo = {
         userFrom: localStorage.getItem('userId'),
     };
-
-    useEffect(() => {
+    const fetchFavoritedMovies = () => {
         Axios.post('/api/favorite/getFavoritedMovies', favoritedMoviesInfo)
-             .then(response => {
-                 console.log(response.data.success)
+            .then(response => {
                 if (response.data.success) {
-                    setFavoriteMovies(response.data.favorites);
-                    // let tempList = []
-                    setNum(num +1);
-                    console.log(num);
-                    console.log(FavoriteMovies)
-
-                    console.log(response.data.favorites)
-                    // FavoriteMovies.map((movie,index)=>{
-                    //     console.log("11")
-                    //     let tempMovie = {}
-                    //     tempMovie.index= index
-                    //     tempMovie.title = movie.movieTitle;
-                    //     tempMovie.runtime = movie.movieRunTime;
-                    //     tempMovie.Image = movie.movieImage;
-                    //     tempMovie.id = movie._id;
-                    //     tempList.push(tempMovie);
-                    //     // tempMovie = {}
-                    //     console.log(tempMovie)
-                    // })
-                    // console.log(tempList)
-                    // setFavoriteMovies([...FavoriteMovies,...tempList]);
-                    // console.log(FavoriteMovies);
+                    let tempList = [];
+                    response.data.favorites.map((movie, index) => {
+                        let tempMovie = {};
+                        tempMovie.key =  movie._id;
+                        tempMovie.title = movie.movieTitle;
+                        tempMovie.runtime = movie.movieRunTime + ' mins';
+                        tempMovie.Image = movie.movieImage;
+                        tempMovie.moviePost = movie.moviePost;
+                        tempMovie.moviedId = parseInt(movie.movieId);
+                        tempMovie.moviedIdString=movie.movieId;
+                        tempMovie.id = movie._id;
+                        tempList.push(tempMovie);
+                    });
+                    setFavoriteMovies(tempList);
                 } else {
                     alert('Failed to get favorited movies')
                 }
             })
-    }, [])
+    }
+    useEffect(() => {
+        fetchFavoritedMovies();
+    }, []);
+
+    useEffect(() => {
+        console.log(FavoriteMovies)
+        
+    }, [FavoriteMovies])
+
 
     const columns = [
         {
             title: 'Movie Title',
             dataIndex: 'title',
             key: 'title',
-            render: text => <a>{text}</a>,
+            render: (text, record) => (<Popover content={
+                <div>
+                    {record.moviePost ?
+                        <img src={`${IMAGE_URL}w185${record.moviePost}`} alt="moviePost" /> :
+                        "no Image"
+                    }
+                </div>
+            } title={record.title}>
+                <a href={`movie/${record.moviedId}`}>{text}</a>
+            </Popover>)
         },
         {
             title: 'Movie Runtime',
@@ -81,39 +92,31 @@ function FavoritePage() {
             key: 'action',
             render: (text, record) => (
                 <span>
-
-                    <a>Delete</a>
+                    {/* <a>Delete</a> */}
+            <Button onClick={() => onClickRemove(record)}>Delete</Button>
                 </span>
             ),
         },
     ];
 
-    const data = [
-        {
-            key: '1',
-            title: 'John Brown',
-            runtime: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['loser'],
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['cool', 'teacher'],
-        },
-    ];
 
-
-
+    const onClickRemove = (record) => {
+       
+         const movieDetail = {
+            userFrom: localStorage.getItem('userId'),
+            movieId: record.moviedIdString,
+        };
+     
+        Axios.post('/api/favorite/removeFromFavorite', movieDetail)
+            .then(response => {
+                if (response.data.success) {
+                    
+                    fetchFavoritedMovies();     
+                } else {
+                    alert('Failed to remove from favorite')
+                }
+            });
+    }
 
 
 
@@ -121,8 +124,7 @@ function FavoritePage() {
         <div style={{ width: '85%', margin: '3rem auto' }}>
             <h3>Favorite Movies By Me</h3>
             <hr />
-
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={FavoriteMovies} />
         </div>
     )
 }
