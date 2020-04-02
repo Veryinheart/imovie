@@ -71,6 +71,7 @@ function LandingPage() {
                             <GridCard
                                 image={movie.poster_path && `${IMAGE_URL}w500${movie.poster_path}`}
                                 moviedId={movie.id}
+                                title={movie.title}
                             />
                         </React.Fragment>
                     ))}

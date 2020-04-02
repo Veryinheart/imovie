@@ -8,9 +8,9 @@ function Footer() {
             flexDirection: 'column', alignItems: 'center',
             justifyContent: 'center', fontSize:'1rem'
         }}>
-           <p> Imovie  爱电影 <Icon type="smile" /></p>
+           <p> imovie  <Icon type="smile" /> Love Movie</p>
         </div>
     )
 }
 
-export default Footer
+export default Footer;

@@ -3,8 +3,7 @@ import { Button } from 'antd';
 import axios from 'axios';
 
 function Favorite(props) {
-
-
+    
     const [favoriteNumber, setFavoriteNumber] = useState(0);
     const [favorited, setFavorited] = useState(false)
 

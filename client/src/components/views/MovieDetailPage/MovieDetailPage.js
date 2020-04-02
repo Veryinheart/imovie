@@ -6,6 +6,9 @@ import { Descriptions, Badge, Button, Row, Typography } from 'antd';
 import GridCard from '../LandingPage/Sections/GridCard';
 import Favorite from './Sections/Favorite';
 
+import Comments from './Sections/Comments';
+import Axios from 'axios';
+
 const { Title } = Typography;
 
 function MovieDetailPage(props) {
@@ -13,41 +16,56 @@ function MovieDetailPage(props) {
     const [Movie, setMovie] = useState([]);
 
     const [Casts, setCasts] = useState([]);
+    const [CommentLists, setCommentLists] = useState([]);
 
     const [Toggle, setToggle] = useState(false);
 
+    
     const MovieId = props.match.params.movieId;
 
     useEffect(() => {
-        // console.log(props)
         const movieId = props.match.params.movieId;
 
         fetch(`${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`)
             .then(response => response.json())
             .then(response => {
-                // console.log(response)
                 setMovie(response);
-
                 fetch(`${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`)
                     .then(response => response.json())
                     .then(response => {
                         // console.log(response.cast)
                         setCasts(response.cast);
-                        // console.log(Casts)
+                 
                     })
-            })
-    }, [])
+            });
+        
+            const variables = {
+                postId: movieId
+            };
 
+        Axios.post('/api/comments/getComments',variables)
+            .then(response=>{
+                if(response.data.success){
+                    // console.log(response.data.)
+                    setCommentLists(response.data.comments)
+                }
+            })
+    }, []);
 
     const handleToggle = () => {
         setToggle(!Toggle);
-    }
-    
+    };
 
+    const updateComment = (newComment) => {
+        setCommentLists(CommentLists.concat(newComment))
+
+    };
+
+//    console.log(Movie);
+   console.log(MovieId);
+   console.log(CommentLists);
     return (
         <div>
-
-
             {/* main image */}
             {Movie && <MainImage
                 image={`${IMAGE_URL}w1280${Movie.backdrop_path}`}
@@ -59,13 +77,13 @@ function MovieDetailPage(props) {
             <div style={{ width: '85%', margin: '2rem auto' }}>
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                   <Favorite 
-                    userFrom={localStorage.getItem('userId')}
-                    movieId={MovieId}
-                    movieInfo={Movie}/>
+                    <Favorite
+                        userFrom={localStorage.getItem('userId')}
+                        movieId={MovieId}
+                        movieInfo={Movie} />
                 </div>
 
-                <Descriptions title="Movie Info" bordered>
+                <Descriptions title="Movie Information" bordered>
                     <Descriptions.Item label="Title">{Movie.title}</Descriptions.Item>
                     <Descriptions.Item label="Relase date">{Movie.release_date}</Descriptions.Item>
                     <Descriptions.Item label="Revenue">{Movie.revenue}</Descriptions.Item>
@@ -85,7 +103,7 @@ function MovieDetailPage(props) {
                 </Descriptions>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button onClick={handleToggle}>
+                <Button onClick={handleToggle}>
                     {Toggle ? "Hide Casts" : " View Casts"}
                 </Button>
             </div>
@@ -111,12 +129,12 @@ function MovieDetailPage(props) {
                 </div>
 
             }
-
-
-
+            <div style={{ width: '85%', margin: '1rem auto' }}>
+                {/* <Comments CommentLists={CommentLists} postId={Movie} refreshFunction={updateComment} /> */}
+            </div>
 
         </div>
     )
 }
 
-export default MovieDetailPage
+export default MovieDetailPage;

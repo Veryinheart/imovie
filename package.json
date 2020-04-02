@@ -16,6 +16,7 @@
   "author": "Daniel Jing",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/icons": "4.0.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
